@@ -102,7 +102,8 @@ func DeleteExpiredVersions(cmd *m.DeleteExpiredVersionsCommand) error {
 
 		if len(versionIdsToDelete) > 0 {
 			deleteExpiredSql := `DELETE FROM dashboard_version WHERE id IN (?` + strings.Repeat(",?", len(versionIdsToDelete)-1) + `)`
-			expiredResponse, err := sess.Exec(deleteExpiredSql, versionIdsToDelete...)
+			sqlOrArgs := append([]interface{}{deleteExpiredSql}, versionIdsToDelete...)
+			expiredResponse, err := sess.Exec(sqlOrArgs...)
 			if err != nil {
 				return err
 			}
